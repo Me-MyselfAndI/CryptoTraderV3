@@ -21,7 +21,7 @@ def train_model(model_creator, sapi, measurement_interval, data_path, delay):
             model_creator.train(data_path)
             training_ended_time = time()
             while True:
-                if time() <= training_ended_time + delay:
+                if time() >= training_ended_time + delay:
                     break
                 print(
                     f'\u001b[32mPrediction {model_creator.prediction_delay * measurement_interval} seconds forward is {model_creator.predict(np.array([sapi.ask_prices, sapi.bid_prices]))}\u001b[0m')
