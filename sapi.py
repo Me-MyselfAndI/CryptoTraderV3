@@ -74,7 +74,7 @@ class Sapi:
             ask_price, bid_price = self.collect_row(interval)
             update_prices(ask_price, bid_price)
 
-            logging.warning(f'{time+1}/{duration} price update\n\t'
+            print(f'{time+1}/{duration} price update\n\t'
                             f'New ask price: {ask_price}\n\t'
                             f'New bid price: {bid_price}\n\t'
                             f'Mode: "{mode.capitalize()}"\n\t')
@@ -98,5 +98,5 @@ class Sapi:
         else:
             raise Exception('Wrong mode')
 
-        logging.warning(response)
+        print(response)
 
