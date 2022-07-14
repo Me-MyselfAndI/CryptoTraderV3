@@ -4,15 +4,18 @@ from threading import Thread, Event
 import numpy as np
 import math
 
-from neural_network import NeuralNet
+from ml_engine import MLEngine
 from sapi import Sapi
 
 
 def update_price_data(sapi, interval, trials_amount, save_interval=50, data_path='saved_data/data.csv'):
     while True:
         for i in range(math.ceil(trials_amount / save_interval)):
-            sapi.collect_data(save_interval, interval, 'append')
-            sapi.export_data(data_path, interval)
+            try:
+                sapi.collect_data(save_interval, interval, 'append')
+                sapi.export_data(data_path, interval)
+            except Exception as err:
+                print(err)
 
 
 def train_model(model_creator, sapi, measurement_interval, data_path, delay):
@@ -33,7 +36,7 @@ def train_model(model_creator, sapi, measurement_interval, data_path, delay):
 
 if __name__ == '__main__':
     interval = 15
-    trials_amount = 1000
+    trials_amount = 50
 
     logging.basicConfig()
     logger = logging.getLogger()
@@ -66,7 +69,7 @@ if __name__ == '__main__':
         # Create a price updating thread
         btc_sapi.collect_data(trials_amount, interval, 'erase')
     elif mode == 1:
-        data = btc_sapi.read_file('data_saved0.csv').to_numpy()
+        data = btc_sapi.read_file('saved_data/data.csv').to_numpy()
         btc_sapi.ask_prices, btc_sapi.bid_prices = data[0], data[1]
 
     # Reset the price updating thread to run constantly on append
@@ -74,7 +77,7 @@ if __name__ == '__main__':
     data_generation_thread.start()
 
     # Run model-updating thread constantly
-    model_creator = NeuralNet(200, 500)
+    model_creator = MLEngine(400, 40)
     model_update_thread = Thread(target=train_model, args=[model_creator, btc_sapi, interval, 'saved_data/data.csv', 1200])
     model_update_thread.start()
 

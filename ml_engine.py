@@ -10,7 +10,7 @@ import pandas
 from sklearn.model_selection import train_test_split
 
 
-class NeuralNet:
+class MLEngine:
     model = None
 
     def __init__(self, trail_size, prediction_delay, batch_size=32, epochs=10):
@@ -90,9 +90,9 @@ class NeuralNet:
             np.array([data[:, i:i + self.trail_size] for i in range(data.shape[1] - self.trail_size)])
         )
         returned_data = self.model.predict(transformed_data)
-        return self.post_model_transform(returned_data)[:, :, -1]
+        return self.post_model_transform(returned_data)[-1, :]
 
 
 if __name__ == '__main__':
-    model_handler = NeuralNet()
+    model_handler = MLEngine(400, 400)
     model_handler.train('saved_data/data_saved2.csv', 250, 10)

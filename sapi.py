@@ -100,3 +100,12 @@ class Sapi:
 
         print(response)
 
+    def get_balance(self, crypto_code):
+        usd = rs.profiles.load_account_profile('crypto_buying_power')
+        crypto = None
+        for data in rs.get_crypto_positions():
+            if data['currency']['code'].lower() == crypto_code.lower():
+                crypto = data['quantity']
+                break
+
+        return {'usd': float(usd), 'crypto': float(crypto)}
